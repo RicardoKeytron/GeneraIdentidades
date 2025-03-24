@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Identidades Falsas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Generador de Identidades Falsas</h1>
+<div class="container">
+    <button onclick="generarIdentidad()">Generar Identidad</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    const nombresHombre = ["Carlos", "Juan", "Pedro", "Manuel", "Luis"];
+    const nombresMujer = ["María", "Ana", "Laura", "Isabel", "Carmen"];
+    const apellidos = ["García", "Martínez", "López", "González", "Rodríguez", "Sánchez", "Pérez", "Fernández", "Gómez", "Díaz"];
+
+    function generarDNI() {
+        const letras = 'TRWAGMYFPDXBNJZSQVHLCKE';
+        let numero = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+        let letra = letras[parseInt(numero) % 23];
+        return numero + letra;
+    }
+
+    function generarTarjeta() {
+        let prefix = '4'; // VISA por defecto
+        let body = '';
+        for (let i = 0; i < 14; i++) {
+            body += Math.floor(Math.random() * 10);
+        }
+
+        let number = prefix + body;
+        let sum = 0;
+        let alternate = false;
+
+        for (let i = number.length - 1; i >= 0; i--) {
+            let n = parseInt(number.charAt(i), 10);
+            if (alternate) {
+                n *= 2;
+                if (n > 9) n = (n % 10) + 1;
+            }
+            sum += n;
+            alternate = !alternate;
+        }
+
+        let checkDigit = (10 - (sum % 10)) % 10;
+        return number + checkDigit;
+    }
+
+    function generarCorreo(nombre, apellido) {
+        return `${nombre.toLowerCase()}.${apellido.toLowerCase()}@gmail.com`;
+    }
+
+    function generarIdentidad() {
+        const esHombre = Math.random() > 0.5;
+        const nombre = esHombre ? nombresHombre[Math.floor(Math.random() * nombresHombre.length)] : nombresMujer[Math.floor(Math.random() * nombresMujer.length)];
+        const apellido1 = apellidos[Math.floor(Math.random() * apellidos.length)];
+        const apellido2 = apellidos[Math.floor(Math.random() * apellidos.length)];
+        const dni = generarDNI();
+        const tarjeta = generarTarjeta();
+        const correo = generarCorreo(nombre, apellido1);
+
+        const identidad = `Nombre: ${nombre} ${apellido1} ${apellido2}\nDNI: ${dni}\nCorreo: ${correo}\nTarjeta de crédito: ${tarjeta}`;
+
+        document.getElementById('result').textContent = identidad;
+    }
+</script>
+
+</body>
+</html>
